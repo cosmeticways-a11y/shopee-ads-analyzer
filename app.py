@@ -1,12 +1,14 @@
-
 import io
+import os
+import sys
 import streamlit as st
 import pandas as pd
 import numpy as np
-from utils import compute, excel_writer
 
-st.set_page_config(page_title="Shopee Ads Analyzer", layout="wide")
-st.title("Shopee Ads Analyzer")
+# Ensure utils is recognized as a package
+sys.path.append(os.path.join(os.path.dirname(__file__), 'utils'))
+
+from utils import compute, excel_writer
 
 st.header("1) Upload")
 col1, col2 = st.columns(2)
