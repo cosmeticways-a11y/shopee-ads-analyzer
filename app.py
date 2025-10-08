@@ -5,20 +5,30 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# Ensure utils is recognized as a package
-sys.path.append(os.path.join(os.path.dirname(__file__), 'utils'))
+# Make sure utils folder is importable
+sys.path.append(os.path.join(os.path.dirname(__file__), "utils"))
 
 from utils import compute, excel_writer
 
-st.header("1) Upload")
+
+# ------------------------------------------------------------
+# Streamlit App
+# ------------------------------------------------------------
+st.set_page_config(page_title="Shopee Ads Analyzer", layout="wide")
+st.title("Shopee Ads Analyzer")
+
+st.header("1) Upload Files")
 col1, col2 = st.columns(2)
+
 with col1:
-    ads_file = st.file_uploader("File 1: Shopee Ads CSV (original export)", type=["csv"])
+    ads_file = st.file_uploader("Shopee Ads CSV (original export)", type=["csv"])
 with col2:
-    costing_file = st.file_uploader("File 2: Product Costing (txt or csv)", type=None)
+    costing_file = st.file_uploader("Product Costing (txt or csv)", type=None)
 
 st.header("2) Controls")
-multiplier = st.number_input("Profit Multiplier (for Suggested ROAS)", min_value=0.1, value=1.25, step=0.05)
+multiplier = st.number_input(
+    "Profit Multiplier (for Suggested ROAS)", min_value=0.1, value=1.25, step=0.05
+)
 
 st.header("3) Generate")
 if st.button("Generate Report", type="primary", use_container_width=True):
@@ -36,7 +46,6 @@ if st.button("Generate Report", type="primary", use_container_width=True):
 
     st.success("Computation completed successfully!")
 
-    # KPIs
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Total GMV", f"₱{result_df['GMV'].sum():,.2f}")
     c2.metric("Total Expense", f"₱{result_df['Expense'].sum():,.2f}")
@@ -55,5 +64,3 @@ if st.button("Generate Report", type="primary", use_container_width=True):
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         use_container_width=True,
     )
-
-st.caption("Tip: You can test with the sample templates inside the repo's /templates folder.")
