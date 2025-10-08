@@ -1,0 +1,1 @@
+streamlit\npandas\nnumpy\nopenpyxl\n
