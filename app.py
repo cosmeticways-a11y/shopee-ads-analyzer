@@ -11,7 +11,6 @@ from utils.compute import (
     compute_kpis,
     style_preview_df,
 )
-
 from utils.excel_writer import build_excel_bytes
 
 st.set_page_config(page_title="Shopee Ads Analyzer", layout="wide")
