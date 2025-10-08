@@ -25,9 +25,12 @@ with col1:
         "File 1: Shopee Ads CSV (original export)", type=["csv"], accept_multiple_files=False
     )
 with col2:
-    costing_file = st.file_uploader(
-        "File 2: Product Costing (txt or csv)", type=["txt", "csv"], accept_multiple_files=False
-    )
+   costing_file = st.file_uploader(
+    "File 2: Product Costing (txt or csv)",
+    type=None,
+    accept_multiple_files=False
+)
+
 
 # --- Controls ---
 st.header("2) Controls")
