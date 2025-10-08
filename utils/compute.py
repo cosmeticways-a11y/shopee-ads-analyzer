@@ -51,7 +51,12 @@ def _require_columns(df: pd.DataFrame):
 def load_shopee_ads_csv(file):
     delim = _detect_delimiter(file)
     file.seek(0)
+    try:
     df = pd.read_csv(file, delimiter=delim, dtype=str, quotechar='"', engine="python")
+except Exception:
+    file.seek(0)
+    df = pd.read_csv(file, delimiter=None, engine="python", dtype=str)
+
     df = _standardize_columns(df)
     _require_columns(df)
     for col in ["expense", "gmv", "roas", "items"]:
