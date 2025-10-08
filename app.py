@@ -13,30 +13,39 @@ from utils.compute import (
 )
 from utils.excel_writer import build_excel_bytes
 
+# -------------------- STREAMLIT APP CONFIG --------------------
 st.set_page_config(page_title="Shopee Ads Analyzer", layout="wide")
 
 st.title("Shopee Ads Analyzer")
 
-# --- Upload ---
+# -------------------- FILE UPLOAD SECTION --------------------
 st.header("1) Upload")
 col1, col2 = st.columns(2)
+
 with col1:
     ads_file = st.file_uploader(
-        "File 1: Shopee Ads CSV (original export)", type=["csv"], accept_multiple_files=False
+        "File 1: Shopee Ads CSV (original export)",
+        type=["csv"],
+        accept_multiple_files=False,
     )
+
 with col2:
-   costing_file = st.file_uploader(
-    "File 2: Product Costing (txt or csv)",
-    type=None,
-    accept_multiple_files=False
+    costing_file = st.file_uploader(
+        "File 2: Product Costing (txt or csv)",
+        type=None,
+        accept_multiple_files=False,
+    )
+
+# -------------------- CONTROLS --------------------
+st.header("2) Controls")
+multiplier = st.number_input(
+    "Profit Multiplier (for Suggested ROAS)",
+    min_value=0.1,
+    value=1.25,
+    step=0.05,
 )
 
-
-# --- Controls ---
-st.header("2) Controls")
-multiplier = st.number_input("Profit Multiplier (for Suggested ROAS)", min_value=0.1, value=1.25, step=0.05)
-
-# --- Generate ---
+# -------------------- GENERATE REPORT --------------------
 st.header("3) Generate")
 generate = st.button("Generate Report", type="primary", use_container_width=True)
 
@@ -65,6 +74,7 @@ if generate:
 
     df_active, df_deleted, df_unmatched = split_deleted_and_active(ads_with_logic)
 
+    # -------------------- KPIS --------------------
     st.header("4) KPIs")
     k = compute_kpis(df_active)
     kpi1, kpi2, kpi3, kpi4, kpi5, kpi6 = st.columns(6)
@@ -75,11 +85,13 @@ if generate:
     kpi5.metric("Losing Ads", f"{k['losing_cnt']}")
     kpi6.metric("Average ROAS", f"{k['avg_roas']:.2f}")
 
+    # -------------------- PREVIEW --------------------
     st.header("5) Preview (first 50 rows)")
     st.caption(f"Detected CSV delimiter: “{detected_delim}”")
     preview = df_active.head(50).copy()
     st.dataframe(style_preview_df(preview), use_container_width=True)
 
+    # -------------------- DOWNLOAD --------------------
     st.header("6) Download")
     try:
         xlsx_bytes = build_excel_bytes(
@@ -87,7 +99,7 @@ if generate:
             df_deleted=df_deleted,
             df_unmatched=df_unmatched,
             multiplier=multiplier,
-            source_name=getattr(ads_file, "name", "shopee_ads.csv"),
+            source_name=getattr(ads_file, "name", "Shopee-Ads-Report.csv"),
         )
         st.download_button(
             label="Download Excel (.xlsx)",
